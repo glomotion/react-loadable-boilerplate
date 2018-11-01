@@ -1,1 +1,4 @@
 node_modules/
+/client
+/server
+/yarn-error.log

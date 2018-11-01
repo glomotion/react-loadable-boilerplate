@@ -1,16 +1,70 @@
 /* @flow */
 
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route } from 'react-router-dom'
+import Loadable from 'react-loadable'
 
-import IndexPage from 'universal/pages/IndexPage'
-import NotFoundPage from 'universal/pages/NotFoundPage'
+import { LoadingPage } from 'universal/pages/LoadingPage/LoadingPage'
 
-export const Routes = () => (
-  <Switch>
-    <Route exact path={'/'} component={IndexPage} />
-    <Route component={NotFoundPage} />
-  </Switch>
-)
+
+const Loading = () => Loadable({
+  loader: () => import('../LoadingPage'),
+  loading: LoadingPage,
+})
+
+const About = () => {
+  return <h2>About ...</h2>;
+};
+
+const Moo = () => {
+  return <h2>Moo cow</h2>;
+};
+
+const App = ({ children, routes }) => {
+  console.log(children);
+  return (
+    <div>
+      <h1>app in here...</h1>
+      {routes.map((route, i) => (
+        <RouteWithSubRoutes key={i} {...route} />
+      ))}
+    </div>
+  );
+}
+
+const routes = [
+  {
+    path: "/",
+    component: App,
+    routes: [
+      {
+        path: "/moo",
+        component: Moo
+      },
+      {
+        path: "/about",
+        component: About
+      }
+    ]
+  }
+];
+
+export const Routes = () => {
+  return routes.map((route, i) => {
+    return <RouteWithSubRoutes key={i} {...route} />
+  });
+}
+
+function RouteWithSubRoutes(route) {
+  return (
+    <Route
+      path={route.path}
+      render={props => (
+        // pass the sub-routes down to keep nesting
+          <route.component {...props} routes={route.routes} />
+      )}
+    />
+  );
+}
 
 export default Routes
