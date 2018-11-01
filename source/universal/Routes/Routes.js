@@ -11,11 +11,13 @@ const NotFound = Loadable({
   loading: LoadingPage,
 })
 
-const About = ({ routes, account }) => {
-  console.log('ABOUT:', account);
+const About = ({ routes, account, user }) => {
+  console.log('ABOUT:', account, user);
   return (
     <div>
       <h2>Nested About ... </h2>
+      <div>{JSON.stringify(user)}</div>
+      <div>{JSON.stringify(account)}</div>
       {mapNestedRoutes(routes)}
     </div>
   );
@@ -54,9 +56,15 @@ const App = ({ children, routes }) => {
       <Link to='/counter'>/counter</Link><br/>
       <Link to='/about'>/about</Link><br/>
       <Link to='/about/moo'>/about/moo</Link><br/>
-      {mapNestedRoutes(routes, { account: {
-        wallet: 'moo cow',
-      }})}
+      {mapNestedRoutes(routes, {
+        account: {
+          wallet: 'moo cow',
+        },
+        user: {
+          id: 'bob the builder',
+          email: 'bob@builder.com',
+        }
+      })}
     </div>
   );
 }
@@ -121,3 +129,39 @@ function RouteWithSubRoutes(route) {
 }
 
 export default Routes
+
+
+// const withRouteOnEnter = callback => BaseComponent => {
+//   const routeOnEnterCallback = (props) => {
+//     if (callback && typeof callback === 'function') {
+//       callback(props)
+//     }
+//   }
+//
+//   class routeOnEnterComponent extends React.Component {
+//     componentWillMount() {
+//       routeOnEnterCallback(this.props)
+//     }
+//
+//     componentWillReceiveProps(nextProps) {
+//       // not 100% sure about using `locatoin.key` to distinguish between routes
+//       if (nextProps.location.key !== this.props.location.key) {
+//         routeOnEnterCallback(nextProps)
+//       }
+//     }
+//
+//     render() {
+//       return <BaseComponent {...this.props} />
+//     }
+//   }
+//
+//   return routeOnEnterComponent
+// }
+//
+// ...
+//
+// const loadData = props => {
+//   fetchStuff(props.someId)
+// }
+//  
+// <Route path="/articles/:id" component={withRouteOnEnter(loadData)(ArticleViewContainer)} />
