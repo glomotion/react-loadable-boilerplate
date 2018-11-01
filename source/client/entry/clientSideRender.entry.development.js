@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { hydrate } from 'react-dom'
-import { preloadReady } from 'react-loadable'
+// import { preloadReady } from 'react-loadable'
 import { AppContainer } from 'react-hot-loader'
 
 import ClientApp from 'client/App'
@@ -16,18 +16,19 @@ export const clientSideRender = (
   Component: React$ComponentType<*> = ClientApp,
   container: HTMLElement | null = document.getElementById(containerId),
   callback?: * = () => console.log('clientSideRender'),
-) =>
-  preloadReady().then(
-    () =>
-      container !== null &&
-      hydrate(
-        <AppContainer>
-          <Component />
-        </AppContainer>,
-        container,
-        callback,
-      ),
-  )
+) => {
+  // preloadReady().then(
+    // () =>
+  return container !== null &&
+    hydrate(
+      <AppContainer>
+        <Component />
+      </AppContainer>,
+      container,
+      callback,
+    );
+  // )
+}
 
 if ('hot' in module && 'accept' in module.hot) {
   module.hot.accept('client/App/index.js', () => {
