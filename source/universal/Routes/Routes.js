@@ -71,7 +71,7 @@ const Moo = () => {
 };
 
 const App = ({ children, routes, ...props }) => {
-  console.log('!!!!!!!!!! App', children, props); // undefined
+  console.log('!!!!!!!!!! App', children); // children === undefined
   return (
     <div>
       <h1>app stuff in here...</h1>
@@ -127,14 +127,14 @@ const routes = [
   },
 ];
 
-function mapNestedRoutes(routes, mergeInProps) {
+function mapNestedRoutes(routes, provideProps) {
   return routes.map((route, i) => (
-    <RouteWithSubRoutes key={i} {...route} mergeInProps={mergeInProps} />
+    <RouteWithSubRoutes key={i} {...route} provideProps={provideProps} />
   ))
 }
 
 function RouteWithSubRoutes(route) {
-  const { Component, path, routes, onLeave, onEnter, mergeInProps } = route;
+  const { Component, path, routes, onLeave, onEnter, provideProps } = route;
   return (
     <Route
       path={route.path}
@@ -144,7 +144,7 @@ function RouteWithSubRoutes(route) {
           <WrappedComponent
             routes={routes}
             {...routerProps}
-            {...mergeInProps}
+            {...provideProps}
           />
         );
       }}
