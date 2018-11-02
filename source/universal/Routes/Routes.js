@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { Route, Link, BrowserRouter } from 'react-router-dom'
 import Loadable from 'react-loadable'
-
+import ScrollToTopOnRoute from 'universal/Routes/ScrollToTopOnRoute';
 import LoadingPage from 'universal/pages/LoadingPage'
 
 
@@ -70,8 +70,8 @@ const Moo = () => {
   return <h2>Nested Moo cow</h2>;
 };
 
-const App = ({ children, routes }) => {
-  // console.log(children); // undefined
+const App = ({ children, routes, ...props }) => {
+  console.log('!!!!!!!!!! App', children, props); // undefined
   return (
     <div>
       <h1>app stuff in here...</h1>
@@ -127,8 +127,6 @@ const routes = [
   },
 ];
 
-const Routes = () => mapNestedRoutes(routes);
-
 function mapNestedRoutes(routes, mergeInProps) {
   return routes.map((route, i) => (
     <RouteWithSubRoutes key={i} {...route} mergeInProps={mergeInProps} />
@@ -154,8 +152,4 @@ function RouteWithSubRoutes(route) {
   );
 }
 
-export default Routes
-
-
-
-// <Route path="/articles/:id" component={withRouteOnEnter(loadData)(ArticleViewContainer)} />
+export default () => mapNestedRoutes(routes)
