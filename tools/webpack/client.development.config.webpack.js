@@ -66,10 +66,10 @@ const webpackClientConfig = {
         REACT_CONTAINER_ID: JSON.stringify('react-container'),
       },
     }),
-    // new ReactLoadablePlugin({
-    //   filename:
-    //     './client/development/react.loadable.development.stats.webpack.json',
-    // }),
+    new ReactLoadablePlugin({
+      filename:
+        './client/development/react.loadable.development.stats.webpack.json',
+    }),
   ],
   resolve: {
     extensions: ['.js'],
