@@ -55,6 +55,7 @@
     "webpack-hot-server-middleware": "^0.5.0"
   },
   "scripts": {
+
     "--TOOLS--": "",
     "test": "yarn run jest",
     "jest": "jest --config tools/jest/config.jest.js --no-cache",
@@ -66,6 +67,7 @@
     "flow-typed:create-stub": "flow-typed update-cache && flow-typed create-stub --libdefDir flow-typed/stubs --overwrite --rootDir tools/flow",
     "prettier": "prettier --config tools/prettier/config.prettier.js --write \"./**/*.js\"",
     "stylelint": "stylelint --config tools/stylelint/config.stylelint.js \"**/*.js\"",
+
     "--DEVELOPMENT--": "",
     "development": "yarn run webpack:development && yarn run node:development",
     "node:development": "node --inspect server/server.development.js",
@@ -75,6 +77,7 @@
     "webpack:development": "yarn run webpack:client:development && yarn run webpack:server:development",
     "webpack:client:development": "webpack --config tools/webpack/client.development.config.webpack.js --profile --json > client/development/client.development.stats.webpack.json",
     "webpack:server:development": "webpack --config tools/webpack/server.development.config.webpack.js --profile --json > server/development/server.development.stats.webpack.json",
+
     "--PRODUCTION--": "",
     "production": "yarn run webpack:production && yarn run node:production",
     "node:production": "node server/server.production.js",
