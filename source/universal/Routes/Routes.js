@@ -136,17 +136,12 @@ function mapNestedRoutes(routes, mergeInProps) {
 }
 
 function RouteWithSubRoutes(route) {
-  const { Component, path, routes, onChange, onLeave, onEnter, mergeInProps } = route;
+  const { Component, path, routes, onLeave, onEnter, mergeInProps } = route;
   return (
     <Route
       path={route.path}
       render={routerProps => {
-        const WrappedComponent =
-        withRouteOnChange(
-          withRouteOnLeave(
-            withRouteOnEnter(Component, onEnter), onLeave
-          ), onChange
-        );
+        const WrappedComponent = withRouteOnLeave(withRouteOnEnter(Component, onEnter), onLeave);
         return (
           <WrappedComponent
             routes={routes}
