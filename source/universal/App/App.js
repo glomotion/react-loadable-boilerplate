@@ -1,9 +1,9 @@
 /* @flow */
 
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
 
 import Routes from 'universal/Routes'
+import { Route, Link, BrowserRouter } from 'react-router-dom'
 
 import Page from 'universal/components/Page'
 

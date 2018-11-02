@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from 'react'
-import { Route, Link } from 'react-router-dom'
+import { Route, Link, BrowserRouter } from 'react-router-dom'
 import Loadable from 'react-loadable'
 
 import LoadingPage from 'universal/pages/LoadingPage'
@@ -9,8 +9,8 @@ import LoadingPage from 'universal/pages/LoadingPage'
 
 function withRouteOnEnter(WrappedComponent, onEnter) {
   return class OnEnterComponent extends Component {
-    componentWillMount() {
-      typeof onEnter === 'function' && onEnter()
+    componentDidMount() {
+      typeof onEnter === 'function' && onEnter(this.props)
     }
 
     render() {
@@ -20,7 +20,7 @@ function withRouteOnEnter(WrappedComponent, onEnter) {
 }
 
 function withRouteOnLeave(WrappedComponent, onLeave) {
-  return class OnEnterComponent extends Component {
+  return class OnLeaveComponent extends Component {
     componentWillUnmount() {
       typeof onLeave === 'function' && onLeave()
     }
@@ -105,12 +105,12 @@ const routes = [
       },
       {
         path: "/moo",
-        onLeave: () => console.log('leaving route: /moo'),
+        onLeave: (props) => console.log('leaving route: /moo', props),
         Component: Moo
       },
       {
         path: "/counter",
-        onEnter: () => console.log('entering route: /counter'),
+        onEnter: (props) => console.log('entering route: /counter', props),
         Component: Counter,
       },
       {
@@ -127,7 +127,7 @@ const routes = [
   },
 ];
 
-export const Routes = () => mapNestedRoutes(routes);
+const Routes = () => mapNestedRoutes(routes);
 
 function mapNestedRoutes(routes, mergeInProps) {
   return routes.map((route, i) => (
@@ -136,12 +136,17 @@ function mapNestedRoutes(routes, mergeInProps) {
 }
 
 function RouteWithSubRoutes(route) {
-  const { Component, path, routes, onLeave, onEnter, mergeInProps } = route;
+  const { Component, path, routes, onChange, onLeave, onEnter, mergeInProps } = route;
   return (
     <Route
       path={route.path}
       render={routerProps => {
-        const WrappedComponent = withRouteOnLeave(withRouteOnEnter(Component, onEnter), onLeave);
+        const WrappedComponent =
+        withRouteOnChange(
+          withRouteOnLeave(
+            withRouteOnEnter(Component, onEnter), onLeave
+          ), onChange
+        );
         return (
           <WrappedComponent
             routes={routes}
