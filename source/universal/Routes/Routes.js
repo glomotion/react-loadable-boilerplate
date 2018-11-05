@@ -51,6 +51,7 @@ const About = ({ routes, account, user }) => {
 class Counter extends React.Component {
   state = {
     val: 0,
+    children: mapNestedRoutes(this.props.routes),
   }
 
   componentDidMount() {
@@ -62,35 +63,48 @@ class Counter extends React.Component {
   }
 
   render() {
-    return <h3>counter value is: {this.state.val}</h3>;
+    const { children, val } = this.state;
+    return <div>
+      <h3>counter value is: {val}</h3>
+      {children}
+    </div>;
   }
 }
 
-const Moo = () => {
-  return <h2>Nested Moo cow</h2>;
-};
+
+class Moo extends React.Component {
+  render() {
+    return <div>
+      <h3>Nested Moo component!</h3>
+      <div>{JSON.stringify(this.props.match)}</div>
+    </div>;
+  }
+}
 
 const App = ({ children, routes, ...props }) => {
   console.log('!!!!!!!!!! App', children); // children === undefined
   return (
-    <div>
-      <h1>app stuff in here...</h1>
-      <Link to='/'>root</Link><br/>
-      <Link to='/404'>async 404</Link><br/>
-      <Link to='/moo'>/moo</Link><br/>
-      <Link to='/counter'>/counter</Link><br/>
-      <Link to='/about'>/about</Link><br/>
-      <Link to='/about/moo'>/about/moo</Link><br/>
-      {mapNestedRoutes(routes, {
-        account: {
-          wallet: 'moo cow',
-        },
-        user: {
-          id: 'bob the builder',
-          email: 'bob@builder.com',
-        }
-      })}
-    </div>
+    <ScrollToTopOnRoute>
+      <div>
+        <h1>app stuff in here...</h1>
+        <Link to='/'>root</Link><br/>
+        <Link to='/404'>async 404</Link><br/>
+        <Link to='/moo'>/moo</Link><br/>
+        <Link to='/counter'>/counter</Link><br/>
+        <Link to='/counter/moo'>/counter/moo</Link><br/>
+        <Link to='/about'>/about</Link><br/>
+        <Link to='/about/moo'>/about/moo</Link><br/>
+        {mapNestedRoutes(routes, {
+          account: {
+            wallet: 'moo cow',
+          },
+          user: {
+            id: 'bob the builder',
+            email: 'bob@builder.com',
+          }
+        })}
+      </div>
+    </ScrollToTopOnRoute>
   );
 }
 
@@ -112,6 +126,13 @@ const routes = [
         path: "/counter",
         onEnter: (props) => console.log('entering route: /counter', props),
         Component: Counter,
+        routes: [
+          {
+            path: "/counter/moo",
+            onEnter: (props) => console.log('entering route: /counter/moo', props),
+            Component: Moo
+          },
+        ],
       },
       {
         path: "/about",
@@ -129,8 +150,12 @@ const routes = [
 
 function mapNestedRoutes(routes, provideProps) {
   return routes.map((route, i) => (
-    <RouteWithSubRoutes key={i} {...route} provideProps={provideProps} />
-  ))
+    <RouteWithSubRoutes
+      key={`${route.path}-${i}`}
+      provideProps={provideProps}
+      {...route}
+    />
+  ));
 }
 
 function RouteWithSubRoutes(route) {
@@ -138,12 +163,14 @@ function RouteWithSubRoutes(route) {
   return (
     <Route
       path={route.path}
-      render={routerProps => {
+      component={routeProps => {
+        console.log('(re)rendering out WrappedComponent!!!');
         const WrappedComponent = withRouteOnLeave(withRouteOnEnter(Component, onEnter), onLeave);
         return (
           <WrappedComponent
+            key={route.path}
             routes={routes}
-            {...routerProps}
+            {...routeProps}
             {...provideProps}
           />
         );
